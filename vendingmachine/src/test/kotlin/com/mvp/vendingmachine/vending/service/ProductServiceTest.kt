@@ -38,7 +38,7 @@ internal class ProductServiceTest {
     @Test
     fun validateAmountMultipleOfNumberThrowError() {
         assertThrows<ApplicationException> { underTest.validateAmountMultipleOfNumber(
-            BigDecimal("30.00"), "5")
+            BigDecimal("31.00"), "5")
         }
     }
 

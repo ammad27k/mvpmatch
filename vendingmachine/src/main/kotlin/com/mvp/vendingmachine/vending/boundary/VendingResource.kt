@@ -29,14 +29,18 @@ class VendingResource(
 
     @PutMapping(value = ["/product/{productId}"])
     @AllowedRoles(roles = ["seller"])
-    fun updateProduct(@RequestBody sellerRequestDto: SellerRequestDto, @RequestParam productId : Long) : SellerResponseDto?  {
+    fun updateProduct(@RequestBody sellerRequestDto: SellerRequestDto,
+                      @PathVariable productId: Long
+    ) : SellerResponseDto?  {
         val principle = SecurityContextHolder.getContext().authentication.principal
         return productService.updateProduct(sellerRequestDto, productId, principle.toString())
     }
 
     @DeleteMapping(value = ["/product/{productId}"])
     @AllowedRoles(roles = ["seller"])
-    fun deleteProduct(@RequestBody sellerRequestDto: SellerRequestDto, @RequestParam productId : Long) : SellerResponseDto?  {
+    fun deleteProduct(@RequestBody sellerRequestDto: SellerRequestDto,
+                      @PathVariable productId: Long
+    ) : SellerResponseDto?  {
         val principle = SecurityContextHolder.getContext().authentication.principal
         return productService.deleteProduct(productId, principle.toString())
     }
@@ -56,10 +60,12 @@ class VendingResource(
         return userService.updateDepositAmount(principle.toString(), depositRequestDto)
     }
 
-    @PostMapping(value = ["/reset"])
+    @PutMapping(value = ["/reset"])
     @AllowedRoles(roles = ["buyer"])
-    fun reset(@RequestBody buyerRequestDto: BuyerRequestDto) : BuyerResponseDto {
-        return BuyerResponseDto(true) // TODO ipmelmentation
+    fun reset() : BuyerResponseDto {
+        val principle = SecurityContextHolder.getContext().authentication.principal
+        productService.resetDeposit(principle.toString())
+        return BuyerResponseDto(true)
     }
 
 }

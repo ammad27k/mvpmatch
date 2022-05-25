@@ -18,4 +18,5 @@ class UserSignUpResource(private val userSignupService: UserSignupService) {
         userSignupService.signUp(req)
         return APIResult(success = true, message = "Signup successfully completed", data = null)
     }
+
 }

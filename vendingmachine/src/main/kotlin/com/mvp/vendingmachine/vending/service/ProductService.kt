@@ -109,4 +109,12 @@ class ProductService(
         return SellerResponseDto(productId, null,"Product Deleted")
     }
 
+    fun resetDeposit(userName : String) {
+        val userEntity = userRepository.findByUserName(userName)
+        userEntity?: throw ApplicationException(ErrorCodes.USER_NOT_EXIST, "user not exist")
+
+        userEntity.deposit = BigDecimal.ZERO
+        userRepository.save(userEntity)
+    }
+
 }
