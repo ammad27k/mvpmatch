@@ -1,0 +1,283 @@
+{
+	"info": {
+		"_postman_id": "8ef66447-68ac-4a06-b880-2e8a9473e03a",
+		"name": "MvpMatch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SignUP",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userName\" : \"aarshad@gmail.com\",\n    \"password\" : \"Dell4321@!123\",\n    \"deposit\" : \"10.00\",\n    \"role\" : \"buyer\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/signups/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"signups",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Key cloak token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "microservice",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "e4502e25-0402-49e7-96c9-9c1512a527e5",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:9000/auth/realms/mvpmatch/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"auth",
+						"realms",
+						"mvpmatch",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.environment.set(\"access_token\", jsonData.access_token);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"aarshad2@gmail.com\",\n    \"password\" : \"Dell4321@!123\",\n    \"clientId\" : \"microservice\",\n    \"ip\" : \"10.0.0.1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/login/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buying Product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJHMnJuSVM3S1ZGZzBaMGlDblc4SjNYQjlKNEJYUHAxZlBwZkdFTW92Zm9zIn0.eyJleHAiOjE2NTM0Njk3OTcsImlhdCI6MTY1MzQ2OTQ5NywianRpIjoiZDg2OTVjZDgtMjcwNi00OTFmLTg1ZWItODFmN2I4ZDU0M2E5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwL2F1dGgvcmVhbG1zL212cG1hdGNoIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjJlZmFiMDM1LTI1NzMtNDBlMS05OGJiLWNjNjFlN2M4ODljZiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1pY3Jvc2VydmljZSIsInNlc3Npb25fc3RhdGUiOiIyODdlZDM5OS0xZjdjLTQ2MzYtYWQ5MC1lMWVjYzgzMjY0OTgiLCJhY3IiOiIxIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJtaWNyb3NlcnZpY2UiOnsicm9sZXMiOlsic2VsbGVyIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInVzZXJfbmFtZSI6ImFhcnNoYWQyQGdtYWlsLmNvbSIsInByZWZlcnJlZF91c2VybmFtZSI6ImFhcnNoYWQyQGdtYWlsLmNvbSIsImVtYWlsIjoiYWFyc2hhZDJAZ21haWwuY29tIn0.FTj_G30mERumSGfqnpBJxZHJJTJfM53KPfH0GppvS9IOeAO25_65cpFZcjAnRfOsqsUaLFHtpS0ypG7xqPfKMmNBhLh2rS7ioOlEiuN3-ZXYGRyLaO0-BV_BDeJsT5Amp7z2yv0hTklumCarQF20L3MhuMYQHbbgivHv_nB5QXlBCsY0wsGKzv96FRjLhS9bJCxqcMesZI1FIoUVustc9kRHrmwhZdLhHLCRiYTcdq8ORnZFwUBs4Hhwy5BWpI4bzSk0tUCF9Kr7osqnuEfeGj0DmrCgzgXYO-WM_8uo9wApjaYz96MrVKK3lmUF30tCDPZz3h1uaZVKmBrleh56eA",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"productId\" : 1,\n    \"amount\" : 30.00\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/vending/buy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"vending",
+						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Direct added user from key cloak admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJHMnJuSVM3S1ZGZzBaMGlDblc4SjNYQjlKNEJYUHAxZlBwZkdFTW92Zm9zIn0.eyJleHAiOjE2NTMyNDkwNDcsImlhdCI6MTY1MzI0ODc0NywianRpIjoiMGQ3ZTI4MGItMmUwOC00MDg3LWFlMGItZDg5ODZkMTFhOWYxIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwL2F1dGgvcmVhbG1zL212cG1hdGNoIiwiYXVkIjpbInJlYWxtLW1hbmFnZW1lbnQiLCJhY2NvdW50Il0sInN1YiI6IjA5NzkyZDc0LTNkMWUtNGQ1ZC04NDFiLTMxNTVhMjdiYmI2NyIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1pY3Jvc2VydmljZSIsInNlc3Npb25fc3RhdGUiOiI3NWEzMWI0Ny01NTA4LTQ5NTEtOGEzZi05YzJiN2U5NGI0OGIiLCJhY3IiOiIxIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbIm1hbmFnZS11c2VycyIsInZpZXctdXNlcnMiLCJxdWVyeS1ncm91cHMiLCJxdWVyeS11c2VycyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInVzZXJfbmFtZSI6ImFkbWluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYWRtaW4ifQ.zqPPkYPKsRWqLb97Hxn_U2LaaILcPnFHwqpuOGGC4B1R9YeqWo5cx3p2AlTQSaoOx2ec72zm61bB_IVwZzx2rsXtOhJwqM7_KAXHmKai-nvjDWqXozP5gUZAhOG3LBWVVh2FjlnrM1Vfek6fogCiApHRQ3vgVCGO1vlqTdrmy8e_xoxAXjgseRWYX8PfI83FwBF53YP4VHkj-zb0HLhy19v3lGuPSxbLWik58L5-gES457YCSIsHjE_g2fjd24TiKuPIdsCqFIWIuLHUtwHnWSTUlJXrOCHwmAO9m5vqYjnYX7kv62j0Ryh4rco-aZxFx4vjgCDAHMZC1mQxlvitEg"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"firstName\":\"Sergey\",\"lastName\":\"Kargopolov\", \"email\":\"test@test.com\", \"enabled\":\"true\", \"username\":\"app-user\",\"credentials\":[{\"type\":\"password\",\"value\":\"test123\",\"temporary\":false}]}"
+				},
+				"url": {
+					"raw": "http://localhost:9000/auth/admin/realms/mvpmatch/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"mvpmatch",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amountAvailable\" : 10.00,\n    \"cost\" : 10.00,\n    \"productName\" : \"Mango Juice\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/vending/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"vending",
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Products List",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7005/api/vending/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"vending",
+						"products"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
