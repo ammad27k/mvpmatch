@@ -1,0 +1,37 @@
+keycloak:
+  baseUri : http://localhost:9000
+  adminUri : http://localhost:9000
+  realm : mvpmatch
+  clientId : microservice
+  clientSecret : e4502e25-0402-49e7-96c9-9c1512a527e5
+  adminUsername : admin
+  adminPassword : admin
+  jwtPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8dko1MyL8gdZXX9Lp7N9jDyozEHrN+YCV0b8KrnK2twG4M5qZUFtqBebepeXfonYFZFQY2zIrkK+cLr3KwvXKzsF1Hcj16PL6zSJmwdESfunr6rNMPxiYMzWdL8UByFnnd5ySa3owVzr3GGx1PrIwmzwvXyZftD/2m3dJ6Bdi3viFaN1RrTKnK9D5bRxIGlI9Q15akpDDufzZ7QKd4fRYBml/WtkoNZiUfEyXfvPucycpFDpKyzzOoIPGZ5CJSmitJfUJbgRsy4llTe6EWrE6q52uG7/V2gVsY1JGZmwGcM/CNhRHXsuAzuybZBQjMuFkqVyfB41hILv3W6QSC7J1wIDAQAB
+  userinfoEndpoint: ${keycloak.baseUri}/auth/realms/${keycloak.realm}/protocol/openid-connect/userinfo
+  introspectionEndpoint : ${keycloak.baseUri}/auth/realms/${keycloak.realm}/protocol/openid-connect/token/introspect
+  tokenEndpoint : ${keycloak.baseUri}/auth/realms/${keycloak.realm}/protocol/openid-connect/token
+  logoutEndpoint : ${keycloak.baseUri}/auth/realms/${keycloak.realm}/protocol/openid-connect/logout
+  issuer-uri: ${keycloak.baseUri}/auth/realms/mvpmatch
+  jwk-set-uri: ${keycloak.baseUri}/auth/realms/mvpmatch/protocol/openid-connect/certs
+
+server:
+  port: 7005
+
+spring:
+  security:
+    ignored: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/vendingmachine?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  sql:
+    init:
+      platform: mysql
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    url: jdbc:mysql://localhost:3306/vendingmachine?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    user: sa
+    password: password

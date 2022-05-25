@@ -1,0 +1,70 @@
+version: '3.2'
+
+volumes:
+  postgres_data:
+    driver: local
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5434:5432
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: vendingmachine
+      MYSQL_USER: sa
+      MYSQL_PASSWORD: password
+    ports:
+      - 3306:3306
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d:rw
+  keycloak:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    labels:
+      container-name: keycloak
+    command:
+      - "-b 0.0.0.0 --debug *:8787"
+    environment:
+      # KEYCLOAK_IMPORT: /opt/realm-files/btcmarkets.json
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      #JAVA_OPTS: -Xms512m -Xmx1024m
+      # Uncomment the line below if you want to specify JDBC parameters.
+      # The parameter below is just an example, and it shouldn't be used in production without knowledge.
+      # It is highly recommended that you read the PostgreSQL JDBC driver documentation in order to use it.
+      #JDBC_PARAMS: "ssl=true"
+
+      # Workaround for issue https://github.com/docker/for-linux/issues/264 ("Support host.docker.internal DNS name to host")
+      # Run on Linux: 'export SSO_USER_ENDPOINT="http://172.17.0.1:8110"' in shell before run docker-compose.
+      ##SSO_USER_ENDPOINT: http://172.17.0.1:8110
+      ##MAIN_SITE_ENDPOINT: http://localhost:8080
+      ##IPQS_ENDPOINT: https://www.ipqualityscoresss.com/api/*/dNPdsaHk0C6aKnRmvlYTTfgULORjwl5VqwJh0konWuwdAFvlCOu2cBY35ZWizLvZFxtbX70JC0X7y69hub1LX856vP9MqSBtdzyD5E9c9MRFV64rOz6v5yFK0lzPGO6MLkgLhjZcvgi59i9gWyZ7YqHbnSjB3gFnVitOPQpU0KOUeIDO3neoch9ztLjh3UrOCzT3VgjlPdk7m3olf814u1vwK1HWfynDSu62WGYlyGhPipi3yUzks41DUq1SOvIL/learn.js
+      ##IPQS_ENABLED: "true"
+      ##SITE_KEY: null
+      ##RECAPTCHA_FEATURE_TOGGLE: "true"
+      ##LOGIN_WITH_USERNAME: "true"
+    ports:
+      - 9000:8080
+      - 8787:8787
+   # volumes:
+    #  - type: "bind"
+     #   source: "./realm-files"
+      #  target: "/opt/realm-files"
+    depends_on:
+      - postgres
