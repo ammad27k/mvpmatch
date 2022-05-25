@@ -24,3 +24,5 @@ run -> **mvn spring-boot:run**
 Now the app is up
 
 There is postman collection are also commited, download and sigup and login with user
+
+**As the time is up now, there are few thing are left, like some unit test and integration test cases are left and need some testing**
