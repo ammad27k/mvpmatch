@@ -55,7 +55,7 @@ class LoginService(private val keyCloakProperties: KeyCloakProperties,
         }
     }*/
 
-    // TODO remove rest template implementatin, this is just becuase feign client form data not working
+    // TODO remove rest template implementation, this is a work arrount because feign client form data not working
     fun getToken(username: String?, password: String?, clientId: String?, ip: String?): OAuthToken? {
         try {
             var clientId = clientId

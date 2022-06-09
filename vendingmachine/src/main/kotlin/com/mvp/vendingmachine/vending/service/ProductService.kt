@@ -10,6 +10,7 @@ import com.mvp.vendingmachine.vending.entity.dto.*
 import com.mvp.vendingmachine.vending.repository.ProductRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.util.stream.Collectors
 
@@ -28,7 +29,7 @@ class ProductService(
 
         validateAmountMultipleOfNumber(sellerRequestDto.cost!!, NO_FOR_MULTIPLE_OF)
 
-        val productEntity = productRepository.save(ProductEntity( // TODO creaet a mapper class
+        val productEntity = productRepository.save(ProductEntity( // TODO create a mapper class
             productName = sellerRequestDto.productName.toString(),
             sellerId = userEntity.id,
             availableAmount = sellerRequestDto.amountAvailable,
@@ -43,17 +44,14 @@ class ProductService(
     }
 
     fun getProducts(userName : String) : List<SellerResponseDto> {
-        val userEntity = userRepository.findByUserName(userName)
-        userEntity?: throw ApplicationException(ErrorCodes.USER_NOT_EXIST, "user not exist")
-        val productEntities = productRepository.findBySellerId(userEntity?.id!!)
-        productEntities?: throw ApplicationException(ErrorCodes.USER_NOT_EXIST, "user not exist")
-
+        val productEntities = productRepository.findAll()
         val response = productEntities.stream().map {
-            SellerResponseDto(it.id, it.productName, null)
+            SellerResponseDto(it.id, it.productName)
         }.collect(Collectors.toList())
         return response
     }
 
+    @Transactional
     fun purchaseProduct(purchaseRequestDto: PurchaseRequestDto, userName : String) : PurchaseResponseDto {
         val userEntity = userRepository.findByUserName(userName)
         userEntity?: throw ApplicationException(ErrorCodes.USER_NOT_EXIST, "user not exist")
@@ -61,23 +59,25 @@ class ProductService(
         val product = productRepository.findById(purchaseRequestDto.productId)
         if(product.isEmpty) throw ApplicationException(ErrorCodes.NOT_PRODUCT_FOUND, "No product found for product id ${purchaseRequestDto.productId}")
 
-        if(purchaseRequestDto.amount!! > userEntity.deposit)
+        val costOfProducts = purchaseRequestDto.amount?.multiply(product.get().cost)
+        if(costOfProducts?.compareTo(userEntity.deposit)!! > 0)
             throw ApplicationException(ErrorCodes.DEPOSIT_AMOUNT_NOT_VALID, "you have less amount in deposit")
 
-        validateAmountMultipleOfNumber(purchaseRequestDto.amount, NO_FOR_MULTIPLE_OF)
+        val totalPurchasedAmount = purchaseRequestDto.amount.multiply(product.get().cost)
 
-        val remainingAmount = userEntity.deposit?.minus(purchaseRequestDto.amount)
-
+        val remainingAmount = userEntity.deposit?.minus(totalPurchasedAmount)
         log.debug("remaining amount: $remainingAmount")
         validateAmountMultipleOfNumber(remainingAmount!!, NO_FOR_MULTIPLE_OF)
 
         // this is for getting purchase amounts
-        val noOfProducts = purchaseRequestDto.amount.divide(product.get().cost)
-        val totalPurchasedAmount = noOfProducts.multiply(product.get().cost)
-        product.get().availableAmount = product.get().availableAmount?.minus(totalPurchasedAmount)
+
+        product.get().availableAmount = product.get().availableAmount?.minus(purchaseRequestDto.amount)
         productRepository.save(product.get())
 
         val returnedCoins = DepositUtils.coinChange(remainingAmount.toInt())
+
+        userEntity.deposit = remainingAmount
+        userRepository.save(userEntity)
 
         return PurchaseResponseDto(returnedCoins, totalPurchasedAmount,
             Product(product.get().id, product.get().productName)

@@ -77,7 +77,7 @@ internal class ProductServiceTest {
             .thenReturn(Optional.of(getProductEntity()))
 
         val response = underTest.purchaseProduct(
-            PurchaseRequestDto(1, BigDecimal("50.00")),
+            PurchaseRequestDto(1, BigDecimal("1")),
             "aarshad"
         )
         assertNotNull(response)

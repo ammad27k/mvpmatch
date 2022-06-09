@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"userName\" : \"aarshad@gmail.com\",\n    \"password\" : \"Dell4321@!123\",\n    \"deposit\" : \"10.00\",\n    \"role\" : \"buyer\"\n}",
+					"raw": "{\n    \"userName\" : \"buyer1@gmail.com\",\n    \"password\" : \"Dell4321@!123\",\n    \"deposit\" : \"20.00\",\n    \"role\" : \"buyer\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -95,7 +95,7 @@
 			"response": []
 		},
 		{
-			"name": "Login",
+			"name": "Buyer Login",
 			"event": [
 				{
 					"listen": "test",
@@ -121,7 +121,57 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\" : \"aarshad2@gmail.com\",\n    \"password\" : \"Dell4321@!123\",\n    \"clientId\" : \"microservice\",\n    \"ip\" : \"10.0.0.1\"\n}",
+					"raw": "{\n    \"username\" : \"buyer1@gmail.com\",\n    \"password\" : \"Dell4321@!123\",\n    \"clientId\" : \"microservice\",\n    \"ip\" : \"10.0.0.1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/login/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"login",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Seller Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.environment.set(\"access_token\", jsonData.access_token);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"seller1@gmail.com\",\n    \"password\" : \"Dell4321@!123\",\n    \"clientId\" : \"microservice\",\n    \"ip\" : \"10.0.0.1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -151,13 +201,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJHMnJuSVM3S1ZGZzBaMGlDblc4SjNYQjlKNEJYUHAxZlBwZkdFTW92Zm9zIn0.eyJleHAiOjE2NTM0Njk3OTcsImlhdCI6MTY1MzQ2OTQ5NywianRpIjoiZDg2OTVjZDgtMjcwNi00OTFmLTg1ZWItODFmN2I4ZDU0M2E5IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwL2F1dGgvcmVhbG1zL212cG1hdGNoIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjJlZmFiMDM1LTI1NzMtNDBlMS05OGJiLWNjNjFlN2M4ODljZiIsInR5cCI6IkJlYXJlciIsImF6cCI6Im1pY3Jvc2VydmljZSIsInNlc3Npb25fc3RhdGUiOiIyODdlZDM5OS0xZjdjLTQ2MzYtYWQ5MC1lMWVjYzgzMjY0OTgiLCJhY3IiOiIxIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJtaWNyb3NlcnZpY2UiOnsicm9sZXMiOlsic2VsbGVyIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInVzZXJfbmFtZSI6ImFhcnNoYWQyQGdtYWlsLmNvbSIsInByZWZlcnJlZF91c2VybmFtZSI6ImFhcnNoYWQyQGdtYWlsLmNvbSIsImVtYWlsIjoiYWFyc2hhZDJAZ21haWwuY29tIn0.FTj_G30mERumSGfqnpBJxZHJJTJfM53KPfH0GppvS9IOeAO25_65cpFZcjAnRfOsqsUaLFHtpS0ypG7xqPfKMmNBhLh2rS7ioOlEiuN3-ZXYGRyLaO0-BV_BDeJsT5Amp7z2yv0hTklumCarQF20L3MhuMYQHbbgivHv_nB5QXlBCsY0wsGKzv96FRjLhS9bJCxqcMesZI1FIoUVustc9kRHrmwhZdLhHLCRiYTcdq8ORnZFwUBs4Hhwy5BWpI4bzSk0tUCF9Kr7osqnuEfeGj0DmrCgzgXYO-WM_8uo9wApjaYz96MrVKK3lmUF30tCDPZz3h1uaZVKmBrleh56eA",
+						"value": "Bearer {{access_token}}",
 						"type": "default"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"productId\" : 1,\n    \"amount\" : 30.00\n}",
+					"raw": "{\n    \"productId\" : 1,\n    \"amount\" : 2\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -175,6 +225,42 @@
 						"api",
 						"vending",
 						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Depost Amount",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"depositAmount\" : 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/vending/deposit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"vending",
+						"deposit"
 					]
 				}
 			},
@@ -217,6 +303,116 @@
 			"response": []
 		},
 		{
+			"name": "Update Product",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"amountAvailable\" : 5.00,\n    \"cost\" : 25.00,\n    \"productName\" : \"Lamp Product\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/vending/product/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"vending",
+						"product",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Product",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/vending/product/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"vending",
+						"product",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reset Product",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7005/api/vending/reset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7005",
+					"path": [
+						"api",
+						"vending",
+						"reset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Add Product",
 			"request": {
 				"method": "POST",
@@ -229,7 +425,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"amountAvailable\" : 10.00,\n    \"cost\" : 10.00,\n    \"productName\" : \"Mango Juice\"\n}",
+					"raw": "{\n    \"amountAvailable\" : 10.00,\n    \"cost\" : 10.00,\n    \"productName\" : \"Orange Juice\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

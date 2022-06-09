@@ -38,8 +38,7 @@ class VendingResource(
 
     @DeleteMapping(value = ["/product/{productId}"])
     @AllowedRoles(roles = ["seller"])
-    fun deleteProduct(@RequestBody sellerRequestDto: SellerRequestDto,
-                      @PathVariable productId: Long
+    fun deleteProduct(@PathVariable productId: Long
     ) : SellerResponseDto?  {
         val principle = SecurityContextHolder.getContext().authentication.principal
         return productService.deleteProduct(productId, principle.toString())
